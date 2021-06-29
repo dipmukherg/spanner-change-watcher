@@ -137,6 +137,7 @@
     <module>google-cloud-spanner-change-archiver</module>
     <module>samples/spanner-change-watcher-samples</module>
     <module>samples/spanner-change-publisher-samples</module>
+    <module>packaging</module>
   </modules>
   
   <build>

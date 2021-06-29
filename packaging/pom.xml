@@ -1,78 +1,67 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloudspannerecosystem</groupId>
-  <artifactId>spanner-change-publisher-samples</artifactId>
-  <version>1.1.0</version>
-  <packaging>jar</packaging>
-  <name>Google Cloud Spanner Change Publisher Samples</name>
-  <description>Google Cloud Spanner Data Change Publisher Samples</description>
+  <artifactId>packaging</artifactId>
+  <packaging>pom</packaging>
+  <name>Google Cloud Spanner Packaging</name>
+  <description>Google Cloud Spanner Data Change Watcher</description>
   <parent>
     <groupId>com.google.cloudspannerecosystem</groupId>
     <artifactId>spanner-change-watcher</artifactId>
     <version>1.1.0</version>
-    <relativePath>../..</relativePath>
   </parent>
-  
-  <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.google.cloudspannerecosystem</groupId>
-      <artifactId>google-cloud-spanner-change-publisher</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>io.grpc</groupId>
-          <artifactId>grpc-api</artifactId>
-        </exclusion>
-      </exclusions>
+        <groupId>com.google.cloudspannerecosystem</groupId>
+        <artifactId>spanner-change-publisher-samples</artifactId>
+        <version>1.1.0</version>
     </dependency>
     <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-api</artifactId>
+        <groupId>com.google.cloudspannerecosystem</groupId>
+        <artifactId>spanner-change-watcher-samples</artifactId>
+        <version>1.1.0</version>
     </dependency>
     
-    <!-- Test dependencies for integration test environment -->
     <dependency>
-      <groupId>com.google.cloudspannerecosystem</groupId>
-      <artifactId>google-cloud-spanner-change-publisher</artifactId>
-      <version>1.1.0</version>
-      <type>test-jar</type>
-      <scope>test</scope>
+        <groupId>com.google.cloudspannerecosystem</groupId>
+        <artifactId>google-cloud-spanner-change-watcher</artifactId>
+        <version>1.1.0</version>
     </dependency>
     <dependency>
-      <groupId>com.google.cloudspannerecosystem</groupId>
-      <artifactId>google-cloud-spanner-change-watcher</artifactId>
-      <version>1.1.0</version>
-      <type>test-jar</type>
-      <scope>test</scope>
+        <groupId>com.google.cloudspannerecosystem</groupId>
+        <artifactId>google-cloud-spanner-change-archiver</artifactId>
+        <version>1.1.0</version>
     </dependency>
     
-    <!-- Generic test dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+        <groupId>com.google.cloudspannerecosystem</groupId>
+        <artifactId>google-cloud-spanner-change-publisher</artifactId>
+        <version>1.1.0</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.truth</groupId>
-      <artifactId>truth</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <build>
+</dependencies>
+
+<build>
     <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+                <execution>
+                    <id>build-package</id>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                    <phase>package</phase>
+                    <configuration>
+                        <descriptors>
+                            <descriptor>assembly.xml</descriptor>
+                        </descriptors>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
@@ -133,8 +122,23 @@
         </archive>
       </configuration>
     </plugin>
+    <plugin>
+      <!-- Build an executable JAR -->
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.1.0</version>
+      <configuration>
+        <archive>
+          <manifest>
+            <addClasspath>true</addClasspath>
+            <classpathPrefix>lib/</classpathPrefix>
+            <mainClass>com.google.cloud.spanner.publisher.sample.SimpleChangePublisherSample</mainClass>
+          </manifest>
+        </archive>
+      </configuration>
+    </plugin>
+    
     </plugins>
-    <finalName>spanner-change-publisher</finalName>
-  </build>
 
+</build>
 </project>
