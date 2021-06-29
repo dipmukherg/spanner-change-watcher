@@ -226,7 +226,7 @@ public class MainTest {
     SpannerDatabaseTailer watcher = (SpannerDatabaseTailer) Main.createWatcher(config, spanner);
     DatabaseId db = DatabaseId.of("my-spanner-project", "my-instance", "my-database");
     assertThat(watcher.getDatabaseId()).isEqualTo(db);
-    Main.createPublisher(config, watcher, mock(DatabaseClient.class));
+    Main.createPublisher(watcher, mock(DatabaseClient.class));
     spanner.close();
   }
 

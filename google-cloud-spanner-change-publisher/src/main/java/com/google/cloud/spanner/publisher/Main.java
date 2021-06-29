@@ -129,7 +129,7 @@ public class Main {
     // that does not exist, we just skip properties from the file and rely on system properties and
     // default values.
     boolean propertyFileSpecified = System.getProperty(prefix("properties")) != null;
-    String propertyFile = System.getProperty(prefix("properties"), DEFAULT_PROPERTIES_FILE_NAME);
+    String propertyFile = "C:\\Users\\dipay\\spanner\\spanner-change-watcher\\google-cloud-spanner-change-publisher\\src\\main\\resources\\scep.properties.example";
     File file = new File(propertyFile);
     boolean readProperties = true;
     if (!file.exists()) {

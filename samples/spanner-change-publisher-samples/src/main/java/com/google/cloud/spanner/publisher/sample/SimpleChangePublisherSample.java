@@ -43,17 +43,10 @@ import java.io.IOException;
 public class SimpleChangePublisherSample {
 
   public static void main(String[] args) throws InterruptedException, IOException {
-    if (args.length != 4) {
-      System.out.println(
-          String.format(
-              "Invalid arguments. Usage: java %s <instanceId> <databaseId> <topicId> <subscriptionId>",
-              SimpleChangePublisherSample.class.getName()));
-      System.exit(1);
-    }
-    String instance = args[0];
-    String database = args[1];
-    String topic = args[2];
-    String subscription = args[3];
+    String instance = "spanner-demo";
+    String database = "demo-database";
+    String topic = "spanner-ledger";
+    String subscription = "None";
     SpannerOptions options = SpannerOptions.newBuilder().build();
     String project = options.getProjectId();
     // Create a connection to a Spanner database.
@@ -72,32 +65,31 @@ public class SimpleChangePublisherSample {
     SpannerDatabaseChangeEventPublisher publisher = createPublisher(spanner, databaseId, topic);
 
     // Create and start a Pubsub Subscriber.
-    System.out.println("Checking/creating subscription...");
-    createSubscriptionIfNotExists(project, topic, subscription);
-    System.out.println("Creating subscriber...");
-    Subscriber subscriber = createSubscriber(project, subscription);
+//    System.out.println("Checking/creating subscription...");
+//    createSubscriptionIfNotExists(project, topic, subscription);
+//    System.out.println("Creating subscriber...");
+//    Subscriber subscriber = createSubscriber(project, subscription);
 
     // Write some data to the database. This will then be published to Pubsub, sent to the
     // subscriber and then written to the console.
-    System.out.println("Writing data to Cloud Spanner...");
-    SampleData.writeExampleData(spanner.getDatabaseClient(databaseId));
+//    System.out.println("Writing data to Cloud Spanner...");
+//    SampleData.writeExampleData(spanner.getDatabaseClient(databaseId));
     // Wait a little to allow all data to be written, and the callback to write the data to the
     // console.
-    Thread.sleep(10_000L);
-    System.out.println("Finished writing test data...");
+//    Thread.sleep(10_000L);
+//    System.out.println("Finished writing test data...");
 
     // Wait for the user to hit <Enter> before exiting.
     System.out.println("The Database Change Publisher is still running in the background.");
-    System.out.println("You can write additional data to the database.");
-    System.out.println("This will cause the data to be written to this console.");
-    System.out.println("Press <Enter> to close this application.");
+    System.out.println("You can write additional data to the database....");
+
 
     System.in.read();
     System.out.println("Closing change publisher and subscriber...");
     publisher.stopAsync();
-    subscriber.stopAsync();
+//    subscriber.stopAsync();
     publisher.awaitTerminated();
-    subscriber.awaitTerminated();
+//    subscriber.awaitTerminated();
     System.out.println("Change publisher and subscriber closed.");
   }
 
@@ -121,50 +113,50 @@ public class SimpleChangePublisherSample {
     return publisher;
   }
 
-  static Subscriber createSubscriber(String project, String subscription) throws IOException {
-    // Start a subscriber.
-    Subscriber subscriber =
-        Subscriber.newBuilder(
-                ProjectSubscriptionName.of(project, subscription),
-                new MessageReceiver() {
-                  @Override
-                  public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
-                    // Get the change metadata.
-                    DatabaseId database = DatabaseId.of(message.getAttributesOrThrow("Database"));
-                    TableId table = TableId.of(database, message.getAttributesOrThrow("Table"));
-                    Timestamp commitTimestamp =
-                        Timestamp.parseTimestamp(message.getAttributesOrThrow("Timestamp"));
-                    // Get the changed row and decode the data.
-                    try {
-                      JsonElement json = JsonParser.parseString(message.getData().toStringUtf8());
-                      System.out.println("--- Received changed record ---");
-                      System.out.printf("Database: %s%n", database);
-                      System.out.printf("Table: %s%n", table);
-                      System.out.printf("Commit timestamp: %s%n", commitTimestamp);
-                      System.out.printf("Data: %s%n", json.toString());
-                    } catch (Exception e) {
-                      System.err.printf("Failed to parse json record: %s%n", e.getMessage());
-                    } finally {
-                      consumer.ack();
-                    }
-                  }
-                })
-            .build();
-    subscriber.startAsync().awaitRunning();
-    return subscriber;
-  }
-
-  static void createSubscriptionIfNotExists(String project, String topic, String subscription)
-      throws IOException {
-    try (SubscriptionAdminClient client =
-        SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder().build())) {
-      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(project, subscription);
-      try {
-        client.getSubscription(subscriptionName);
-      } catch (NotFoundException e) {
-        TopicName topicName = TopicName.of(project, topic);
-        client.createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 60);
-      }
-    }
-  }
+//  static Subscriber createSubscriber(String project, String subscription) throws IOException {
+//    // Start a subscriber.
+//    Subscriber subscriber =
+//        Subscriber.newBuilder(
+//                ProjectSubscriptionName.of(project, subscription),
+//                new MessageReceiver() {
+//                  @Override
+//                  public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
+//                    // Get the change metadata.
+//                    DatabaseId database = DatabaseId.of(message.getAttributesOrThrow("Database"));
+//                    TableId table = TableId.of(database, message.getAttributesOrThrow("Table"));
+//                    Timestamp commitTimestamp =
+//                        Timestamp.parseTimestamp(message.getAttributesOrThrow("Timestamp"));
+//                    // Get the changed row and decode the data.
+//                    try {
+//                      JsonElement json = JsonParser.parseString(message.getData().toStringUtf8());
+//                      System.out.println("--- Received changed record ---");
+//                      System.out.printf("Database: %s%n", database);
+//                      System.out.printf("Table: %s%n", table);
+//                      System.out.printf("Commit timestamp: %s%n", commitTimestamp);
+//                      System.out.printf("Data: %s%n", json.toString());
+//                    } catch (Exception e) {
+//                      System.err.printf("Failed to parse json record: %s%n", e.getMessage());
+//                    } finally {
+//                      consumer.ack();
+//                    }
+//                  }
+//                })
+//            .build();
+//    subscriber.startAsync().awaitRunning();
+//    return subscriber;
+//  }
+//
+//  static void createSubscriptionIfNotExists(String project, String topic, String subscription)
+//      throws IOException {
+//    try (SubscriptionAdminClient client =
+//        SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder().build())) {
+//      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(project, subscription);
+//      try {
+//        client.getSubscription(subscriptionName);
+//      } catch (NotFoundException e) {
+//        TopicName topicName = TopicName.of(project, topic);
+//        client.createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 60);
+//      }
+//    }
+//  }
 }

@@ -18,15 +18,15 @@ scep.maxWaitForShutdownSeconds=20
 # The project only needs to be set if the default project ID of the environment is not the
 # project that should be used.
 
-scep.spanner.project=my-spanner-project
-scep.spanner.instance=my-instance
-scep.spanner.database=my-database
+scep.spanner.project=myspringml2
+scep.spanner.instance=spanner-demo
+scep.spanner.database=demo-database
 
 # The account to use to establish a connection with the Spanner database. This only needs to be
 # set if the default Google Cloud credentials of the environment are not the one that should be
 # used.
 
-scep.spanner.credentials=/path/to/spanner-credentials.json
+#scep.spanner.credentials=/path/to/spanner-credentials.json
 
 
 # ----- TABLE SELECTION ----- #
@@ -44,13 +44,13 @@ scep.spanner.allTables=false
 # combination with the option allTables=true. You do not need to exclude tables that do not have a
 # column with the option ALLOW_COMMIT_TIMESTAMP=TRUE. Those tables will automatically be excluded.
 
-#scep.spanner.excludedTables=TABLE1,TABLE2,TABLE3
+#scep.spanner.excludedTables=Singers
 
 
 # A list of tables that should be included in the monitoring. This option may only be used in
 # combination with the option allTables=false.
 
-scep.spanner.includedTables=TABLE1,TABLE2,TABLE3
+scep.spanner.includedTables=demo_table
 
 
 # The poll interval of the Spanner tailer. The interval should be given in ISO-8601 period format.
@@ -65,13 +65,13 @@ scep.spanner.pollInterval=PT0.5S
 # The project only needs to be set if the default project ID of the environment is not the
 # project that should be used. The Pubsub project ID and Spanner project ID may be different.
 
-scep.pubsub.project=my-pubsub-project
+scep.pubsub.project=myspringml2
 
 
 # The account to use to connect to Pubsub. This only needs to be set if the default Google
 # Cloud credentials of the environment are not the one that should be used.
 
-scep.pubsub.credentials=/path/to/pubsub-credentials.json
+#scep.pubsub.credentials=/path/to/pubsub-credentials.json
 
 # The ConverterFactory to use to convert a Cloud Spanner row to a serializable format that
 # can be published as a Pubsub message. The value for this property should be the fully
